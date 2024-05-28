@@ -1,4 +1,4 @@
-import  { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -6,35 +6,41 @@ import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import TextField from "@mui/material/TextField";
 
-const Card = () => {
+const Card = ({ count }) => {
   const [userData, setUserData] = useState(null);
-
+  // const [counts, setCounts] = useState(0);
+  // setCounts(count);
+  
+  console.log("count",count);
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchData = async (count) => {
       try {
+
         const response = await fetch(
-          "https://randomuser.me/api/?page=1&results=1&seed=abc"
+          `https://randomuser.me/api/?page=${count}&results=1&seed=abc`
         );
+        console.log(response);
         if (!response.ok) {
           throw new Error("Failed to fetch data");
         }
         const data = await response.json();
-        setUserData(data.results[0]); // Extract the first user from the results array
+        setUserData(data.results[0]);
+        console.log(userData)
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
 
-    fetchData();
+    fetchData(count);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Empty dependency array ensures useEffect runs only once
+  }, [count]); // Empty dependency array ensures useEffect runs only once
 
   return (
     <div className="flex justify-center items-center">
       <div className="border-4 border-slate-600 bg-slate-100 rounded-3xl m-6 grid md:flex">
         <div className="border-4 border-slate-600 rounded-3xl m-6 w-[180px] h-[180px] bg-gray-300">
-        {userData && (
+          {userData && (
             <img
               className="w-full h-full rounded-2xl"
               src={userData.picture.large}
@@ -42,7 +48,7 @@ const Card = () => {
             />
           )}
         </div>
-        <div className="grid m-auto">
+        <div className="grid m-auto mx-2 pb-2">
           <div className="">
             {userData && ( // Display form fields only when userData is available
               <>
@@ -52,7 +58,7 @@ const Card = () => {
                       required
                       id="outlined-required"
                       label="FirstName"
-                      defaultValue={userData.name.first}
+                      value={userData.name.first}
                     />
                   </div>
                   <div>
@@ -60,7 +66,7 @@ const Card = () => {
                       required
                       id="outlined-required"
                       label="LastName"
-                      defaultValue={userData.name.last}
+                      value={userData.name.last}
                     />
                   </div>
                 </div>
@@ -73,7 +79,7 @@ const Card = () => {
                       row
                       aria-labelledby="demo-row-radio-buttons-group-label"
                       name="row-radio-buttons-group"
-                      defaultValue={userData.gender}
+                      value={userData.gender}
                     >
                       <FormControlLabel
                         value="female"
@@ -93,13 +99,13 @@ const Card = () => {
                     </RadioGroup>
                   </FormControl>
                 </div>
-                <div>
+                <div className="pr-4 ">
                   <TextField
                     id="outlined-password-input"
                     label="Mobile Number"
                     type=""
                     autoComplete=""
-                    defaultValue={userData.cell}
+                    value={userData.cell}
                   />
                 </div>
               </>
